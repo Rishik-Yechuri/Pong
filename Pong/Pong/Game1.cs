@@ -115,9 +115,6 @@ namespace Pong
                 this.Exit();
 
             // TODO: Add your update logic here
-
-
-            ballSpeedXTemp = ballSpeedX + spin;
             if (ballRect.Intersects(bottom) || ballRect.Intersects(top))
                 ballSpeedY *= -1;
                 ballSpeedXTemp = ballSpeedX + spin;
