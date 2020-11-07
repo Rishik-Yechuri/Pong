@@ -23,6 +23,7 @@ namespace Pong
         Rectangle backgroundRct, ballRect, whiteRct;
         int ballSpeedX;
         int ballSpeedY;
+        int ballSpeedXTemp;
 
         int leftPaddleY = 185;
         int rightPaddleY = 185;
@@ -40,6 +41,7 @@ namespace Pong
         int ballX = 400;
         int ballY = 230;
 
+        int spin = 3;
         bool gameOver = false;
         SpriteFont font1;
         SpriteFont bigFont;
@@ -70,6 +72,7 @@ namespace Pong
             leftPaddle = new Rectangle(15, leftPaddleY, 30, 90);
             rightPaddle = new Rectangle(760,leftPaddleY,30,90);
             ballSpeedX = 2;
+            ballSpeedXTemp = 2;
             ballSpeedY = 3;
 
             base.Initialize();
@@ -112,15 +115,18 @@ namespace Pong
                 this.Exit();
 
             // TODO: Add your update logic here
-         
 
 
+            ballSpeedXTemp = ballSpeedX + spin;
             if (ballRect.Intersects(bottom) || ballRect.Intersects(top))
                 ballSpeedY *= -1;
+                ballSpeedXTemp = ballSpeedX + spin;
+                reduceSpin();
             if (ballRect.Intersects(leftPaddle) || ballRect.Intersects(rightPaddle))
                 ballSpeedX *= -1;
+                ballSpeedXTemp = ballSpeedX + spin;
+                //reduceSpin();
             if (ballRect.Intersects(right)) {
-                //playerOneScore++;
                 if (++playerOneScore >= 11 && playerOneScore-playerTwoScore >= 2) {
                     playerOneGamesWon++;
                     playerOneScore = 0;
@@ -129,7 +135,6 @@ namespace Pong
                 resetBall();
             }
             if (ballRect.Intersects(left)) {
-                //playerTwoScore++;
                 if (++playerTwoScore >= 11 && playerTwoScore-playerOneScore >= 2)
                 {
                     playerTwoGamesWon++;
@@ -152,7 +157,7 @@ namespace Pong
             }
             leftPaddle = new Rectangle(15, leftPaddleY, 30, 90);
             rightPaddle = new Rectangle(760, rightPaddleY, 30, 90);
-            ballX += ballSpeedX;
+            ballX += ballSpeedXTemp;
             ballY += ballSpeedY;
             ballRect = new Rectangle(ballX, ballY, 20, 20);
             oldKb = kb;
@@ -166,19 +171,13 @@ namespace Pong
             if (random.Next(0, 2) == 1) { ballSpeedY *= -1; }
             ballX = 400;
             ballY = 230;
+            spin = random.Next(-3,4);
+            ballSpeedXTemp = ballSpeedX + spin;
         }
-        /*public void checkGameScore() {
-            if (playerOneGamesWon >= 11 || playerTwoGamesWon >= 11 && Math.Abs(playerTwoGamesWon-playerOneGamesWon) >= 2) {
-                gameOver = true;
-            }
-        }*/
-        private Boolean isOverlapping(Rectangle rec1, Rectangle rec2)
-        {
-            if ((rec1.X + rec1.Width) > rec2.X && rec1.X < (rec2.X + rec2.Width) &&
-                (rec1.Y + rec1.Height) > rec2.Y && rec1.Y < (rec2.Y + rec2.Height))
-                return true;
-            else
-                return false;
+        public void reduceSpin() {
+            if (spin > 0) { spin--; }
+            else if (spin < 0) { spin++; }
+           // spin += Math.Sign(spin);
         }
         /// <summary>
         /// This is called when the game should draw itself.
